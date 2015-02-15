@@ -1,0 +1,20 @@
+{
+  "node": true,
+  "eqeqeq": true,
+  "curly": false,
+  "debug": true,
+  "eqnull": true,
+  "multistr": true,
+  "asi": false,
+  "plusplus": true,
+  "nomen": false,
+  "indent": 2,
+  "newcap": true,
+  "nonew": true,
+  "undef": true,
+  "unused": true,
+  "globals": {
+    "jquery": false,
+    "browser": false
+  }
+}

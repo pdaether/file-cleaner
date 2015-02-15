@@ -1,0 +1,35 @@
+{
+  "name": "file-cleaner",
+  "version": "1.0.0",
+  "description": "Remove old files periodically",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/_mocha -R spec",
+    "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui bdd -R spec -t 5000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pdaether/file-cleaner.git"
+  },
+  "keywords": [
+    "delete",
+    "files",
+    "periodically",
+    "cron"
+  ],
+  "author": "Patrick Daether <public@pd-digital.de> (http://www.pd-digital.de/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pdaether/file-cleaner/issues"
+  },
+  "dependencies": {
+    "cron": "~1.0.6"
+  },
+  "devDependencies": {
+    "mock-fs": "~2.5.0",
+    "mocha": "~2.1.0",
+    "chai": "~2.0.0",
+    "istanbul": "~0.3.5",
+    "mocha-jshint": "0.0.9"
+  }
+}
