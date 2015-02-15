@@ -5,6 +5,7 @@ file-cleaner is a nodejs module for removing old files periodically.
 [![Build Status](https://travis-ci.org/pdaether/file-cleaner.svg?branch=master)](https://travis-ci.org/pdaether/file-cleaner)
 [![Coverage Status](https://coveralls.io/repos/pdaether/file-cleaner/badge.svg)](https://coveralls.io/r/pdaether/file-cleaner)
 [![Code Climate](https://codeclimate.com/github/pdaether/file-cleaner/badges/gpa.svg)](https://codeclimate.com/github/pdaether/file-cleaner)
+[![Dependency Status](https://gemnasium.com/pdaether/file-cleaner.svg)](https://gemnasium.com/pdaether/file-cleaner)
 
 ## Install
 
