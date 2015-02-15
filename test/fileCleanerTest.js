@@ -30,7 +30,15 @@ describe('Testing the cleanup function', function () {
           mode: 0400,
           uid: 4711,
           gid: 4712
-        })
+        }),
+        subfolder: {
+          newFile: mock.file({
+            atime: new Date(Date.now() - times.min)
+          }),
+          oldFile: mock.file({
+            atime: new Date(Date.now() - times.hour)
+          })
+        }
       },
       'path/to/unreadable/dir': mock.directory({
         mode: 0400,
@@ -110,6 +118,60 @@ describe('Testing the cleanup function', function () {
     cleaner.stop();
   });
 
+
+  it('It should start automatically if start is true', function (done) {
+    var cleaner = new FileCleaner('fake/path/to/dir/', times.min15,  '* * * * * *', {
+      start: true
+    });
+
+    setTimeout(function(){
+      expect(fs.existsSync('fake/path/to/dir/oldFile')).to.be.false;
+      done();
+      cleaner.stop();
+    }, 1500);
+
+  });
+
+  it('Omitting the options should be fine', function (done) {
+    var cleaner = new FileCleaner('fake/path/to/dir/', times.min15,  '*/15 * * * * *');
+    cleaner.cleanUp();
+
+    setTimeout(function(){
+      expect(fs.existsSync('fake/path/to/dir/newFile')).to.be.true;
+      expect(fs.existsSync('fake/path/to/dir/oldFile')).to.be.false;
+      done();
+    }, 100);
+  });
+
+  it('Working recursive should work fine', function (done) {
+    var cleaner = new FileCleaner('fake/path/to/dir/', times.min15,  '*/15 * * * * *', {
+      start: false,
+      recursive: true
+    });
+    cleaner.cleanUp();
+
+    setTimeout(function(){
+      expect(fs.existsSync('fake/path/to/dir/subfolder/newFile')).to.be.true;
+      expect(fs.existsSync('fake/path/to/dir/subfolder/oldFile')).to.be.false;
+      done();
+    }, 100);
+  });
+
+  it('If recursive is false, ignore subfolders', function (done) {
+    var cleaner = new FileCleaner('fake/path/to/dir/', times.min15,  '*/15 * * * * *', {
+      start: false,
+      recursive: false
+    });
+    cleaner.cleanUp();
+
+    setTimeout(function(){
+      expect(fs.existsSync('fake/path/to/dir/newFile')).to.be.true;
+      expect(fs.existsSync('fake/path/to/dir/oldFile')).to.be.false;
+      expect(fs.existsSync('fake/path/to/dir/subfolder/newFile')).to.be.true;
+      expect(fs.existsSync('fake/path/to/dir/subfolder/oldFile')).to.be.true;
+      done();
+    }, 100);
+  });
 
   xit('It should emit an error if a file could not be deleted', function (done) {
     var cleaner = new FileCleaner('fake/path/to/dir/', times.min15,  '15 * * * * *', {

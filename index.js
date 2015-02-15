@@ -6,6 +6,22 @@ var CronJob       = require('cron').CronJob;
 var fs            = require('fs');
 var pathUtil      = require('path');
 
+/**
+ * Shorthand for common intervalls, so you don't need to work with milliseconds
+ * @type {{sec: number, min: number, min15: number, hour: number, day: number}}
+ */
+var times = {
+  sec:   1000,
+  min:   60000, // 60 * 1000
+  min15: 900000, // 15 * 60 * 1000
+  hour:  3600000, // 60 * 60 * 1000
+  day:   86400000 // 24 * 60 * 60 * 1000
+};
+
+/**
+ * The default options for FileCleaner.
+ * @type {{start: boolean, timeZone: undefined|string, recursive: boolean, timeFiled: string}}
+ */
 var defaultOptions = {
   start: false,
   timeZone: undefined,
@@ -13,6 +29,15 @@ var defaultOptions = {
   timeFiled: 'atime'
 };
 
+/**
+ * Constructor function, takes the following paramters:
+ *
+ * @param string path - Filepath to the folder to watch
+ * @param integer maxAge - value in milliseconds
+ * @param string cronTime - Crontab like string
+ * @param object options - Object with additional options
+ * @constructor
+ */
 var FileCleaner = function (path, maxAge, cronTime, options) {
 
   this.job = null;
@@ -30,8 +55,13 @@ var FileCleaner = function (path, maxAge, cronTime, options) {
 
 };
 
+//We need to emit events:
 util.inherits(FileCleaner, EventEmitter);
 
+/**
+ * Starts to wach the given path.
+ * Will emit the event 'start'.
+ */
 FileCleaner.prototype.start = function(){
   this.job = new CronJob(
     this.cronTime,
@@ -49,6 +79,10 @@ FileCleaner.prototype.start = function(){
   });
 };
 
+/**
+ * Stops watching the given path.
+ * Will emit the event 'stop'.
+ */
 FileCleaner.prototype.stop = function(){
   this.job.stop();
 
@@ -59,6 +93,13 @@ FileCleaner.prototype.stop = function(){
   });
 };
 
+
+/**
+ * Will cleanup the given path and will
+ * remove all files that are older than maxAge.
+ *
+ * Emits the event 'delete' if a file will be deleted.
+ */
 FileCleaner.prototype.cleanUp = function(){
 
   var self      = this;
@@ -104,5 +145,10 @@ FileCleaner.prototype.cleanUp = function(){
 };
 
 
+/**
+ * Exports:
+ */
+
 module.exports.FileCleaner = FileCleaner;
 module.exports.CronJob     = CronJob;
+module.exports.times       = times;
