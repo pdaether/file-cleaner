@@ -1,6 +1,6 @@
 {
-  "name": "file-cleaner",
-  "version": "1.0.0",
+  "name": "cron-file-cleaner",
+  "version": "1.0.1",
   "description": "Remove old files periodically",
   "main": "index.js",
   "scripts": {

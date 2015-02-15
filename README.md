@@ -1,6 +1,6 @@
-# file-cleaner
+# cron-file-cleaner
 
-file-cleaner is a nodejs module for removing old files periodically.
+cron-file-cleaner is a nodejs module for removing old files periodically.
 
 [![Build Status](https://travis-ci.org/pdaether/file-cleaner.svg?branch=master)](https://travis-ci.org/pdaether/file-cleaner)
 [![Coverage Status](https://coveralls.io/repos/pdaether/file-cleaner/badge.svg)](https://coveralls.io/r/pdaether/file-cleaner)
@@ -10,13 +10,13 @@ file-cleaner is a nodejs module for removing old files periodically.
 ## Install
 
 ```
-npm install file-cleaner
+npm install cron-file-cleaner
 ```
 
 ## Usage
 
 ```
-var FileCleaner = require('file-cleaner').FileCleaner;
+var FileCleaner = require('cron-file-cleaner').FileCleaner;
 
 var sessionWatcher = new FileCleaner(__dirname + '/files/', 15 * 60 * 1000,  '*/15 * * * * *', {
   start: true
@@ -26,7 +26,7 @@ var sessionWatcher = new FileCleaner(__dirname + '/files/', 15 * 60 * 1000,  '*/
 ## Full example
 
 ```
-var FileCleaner = require('file-cleaner').FileCleaner;
+var FileCleaner = require('cron-file-cleaner').FileCleaner;
 
 var sessionWatcher = new FileCleaner(__dirname + '/session_files/', 60 * 60 * 1000,  '00 */15 * * * *', {
   recursive: true,
