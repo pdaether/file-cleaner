@@ -27,9 +27,12 @@ describe('Testing the cleanup function', function () {
         }),
         oldUnreadableFile: mock.file({
           atime: new Date(Date.now() - times.hour),
-          mode: 0400,
+          mode: 0200,
           uid: 4711,
           gid: 4712
+        }),
+        gitignore: mock.file({
+          atime: new Date(Date.now() - times.hour)
         }),
         subfolder: {
           newFile: mock.file({
@@ -41,7 +44,7 @@ describe('Testing the cleanup function', function () {
         }
       },
       'path/to/unreadable/dir': mock.directory({
-        mode: 0400,
+        mode: 0000,
         uid: 4711,
         gid: 4712
       })
@@ -167,8 +170,38 @@ describe('Testing the cleanup function', function () {
     setTimeout(function(){
       expect(fs.existsSync('fake/path/to/dir/newFile')).to.be.true;
       expect(fs.existsSync('fake/path/to/dir/oldFile')).to.be.false;
+      expect(fs.existsSync('fake/path/to/dir/gitignore')).to.be.false;
       expect(fs.existsSync('fake/path/to/dir/subfolder/newFile')).to.be.true;
       expect(fs.existsSync('fake/path/to/dir/subfolder/oldFile')).to.be.true;
+      done();
+    }, 100);
+  });
+
+  it('It should respect a given blacklist', function (done) {
+    var cleaner = new FileCleaner('fake/path/to/dir/', times.min15,  '*/15 * * * * *', {
+      start: false,
+      blackList: /gitignore/
+    });
+    cleaner.cleanUp();
+
+    setTimeout(function(){
+      expect(fs.existsSync('fake/path/to/dir/oldFile')).to.be.false;
+      expect(fs.existsSync('fake/path/to/dir/gitignore')).to.be.true;
+      done();
+      delete cleaner;
+    }, 100);
+  });
+
+  it('It should respect a given whitelist', function (done) {
+    var cleaner = new FileCleaner('fake/path/to/dir/', times.min15,  '*/15 * * * * *', {
+      start: false,
+      whiteList: /gitignore/
+    });
+    cleaner.cleanUp();
+
+    setTimeout(function(){
+      expect(fs.existsSync('fake/path/to/dir/oldFile')).to.be.true;
+      expect(fs.existsSync('fake/path/to/dir/gitignore')).to.be.false;
       done();
     }, 100);
   });

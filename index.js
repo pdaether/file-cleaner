@@ -20,13 +20,15 @@ var times = {
 
 /**
  * The default options for FileCleaner.
- * @type {{start: boolean, timeZone: undefined|string, recursive: boolean, timeFiled: string}}
+ * @type {{}}
  */
 var defaultOptions = {
   start: false,
   timeZone: undefined,
   recursive: false,
-  timeFiled: 'atime'
+  timeField: 'atime',
+  blackList: undefined,
+  whiteList: undefined
 };
 
 /**
@@ -44,7 +46,7 @@ var FileCleaner = function (path, maxAge, cronTime, options) {
   this.path = path;
   this.maxAge = maxAge;
   this.cronTime = cronTime;
-  this.options = defaultOptions;
+  this.options = util._extend({}, defaultOptions);
   if(typeof options === 'object' && options !== null){
     this.options = util._extend(this.options, options);
   }
@@ -105,7 +107,9 @@ FileCleaner.prototype.cleanUp = function(){
   var self      = this;
   var maxAge    = this.maxAge;
   var recursive = this.options.recursive;
-  var timeFiled = this.options.timeFiled;
+  var timeField = this.options.timeField;
+  var blackList = this.options.blackList;
+  var whiteList = this.options.whiteList;
 
   function worker(path) {
     fs.readdir(path, function (err, files) {
@@ -120,10 +124,14 @@ FileCleaner.prototype.cleanUp = function(){
             self.emit('error', new Error("Can't read file " + filePath));
             return;
           }
-          if (stats.isFile() && (Date.now() - stats[timeFiled].getTime()) > maxAge) {
+          if (
+            stats.isFile() &&
+            (Date.now() - stats[timeField].getTime()) > maxAge &&
+            checkPattern(file, blackList, whiteList)
+          ) {
             fs.unlink(filePath, function (err) {
               if (err) {
-                self.emit('error', new Error("Can't delete " + path));
+                self.emit('error', new Error("Can't delete " + filePath));
                 return;
               }
               self.emit('delete',{
@@ -144,6 +152,35 @@ FileCleaner.prototype.cleanUp = function(){
 
 };
 
+/**
+ * Helper functions
+ */
+
+/**
+ * Checks blackList- and whitList-regex against
+ * the given file name and returns if this file can
+ * be deleted.
+ *
+ * @param string file - the gile name
+ * @param regex|undefined blackList
+ * @param regex|undefined - whiteList
+ * @returns {boolean}
+ */
+function checkPattern(file, blackList, whiteList){
+
+  if (util.isRegExp(blackList) && blackList.test(file)) {
+    return false;
+  }
+
+  if (util.isRegExp(whiteList)) {
+    if (whiteList.test(file)) {
+      return true;
+    }
+    return false;
+  }
+
+  return true;
+}
 
 /**
  * Exports:
