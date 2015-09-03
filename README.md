@@ -20,7 +20,7 @@ A basic example can look like this:
 ```node
 var FileCleaner = require('cron-file-cleaner').FileCleaner;
 
-var fileWatcher = new FileCleaner('/path/to/folder/', 600000,  '* */15 * * * *', {
+var fileWatcher = new FileCleaner('/path/to/folder/', 600000,  '00 */15 * * * *', {
   start: true
 });
 ```
@@ -53,7 +53,7 @@ The options object can have the following attributes:
 - `timeField`: Which time field of the files should be considered. Default 'atime', can be 'atime', 'ctime, or 'mtime'.
 - `timeZone`: Timezone to use, default is undefined, e.g. 'America/Los_Angeles'.
 - `blackList`: A RegEx for excluding files, default is undefined, e.g. `/\.gitkeep/`
-- `whitList`: A RegEx for including only the files with a matching name, default is undefined, e.g. `/.*\.log/`
+- `whiteList`: A RegEx for including only the files with a matching name, default is undefined, e.g. `/.*\.log/`
 
 ### Methods
 
