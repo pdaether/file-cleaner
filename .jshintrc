@@ -13,6 +13,7 @@
   "nonew": true,
   "undef": true,
   "unused": true,
+  "globalstrict": true,
   "globals": {
     "jquery": false,
     "browser": false
